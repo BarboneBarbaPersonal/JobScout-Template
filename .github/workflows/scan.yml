@@ -1,0 +1,76 @@
+# Scan every hour: read the Google Sheet, check all job boards, publish the page.
+name: Scan
+
+on:
+  schedule:
+    - cron: "13 * * * *" # every hour at :13 (GitHub may start it a little later)
+  workflow_dispatch: # the "Run workflow" button
+  push:
+    branches: [main] # also right after the project is created from the template
+
+permissions:
+  contents: read
+  pages: write    # publish the page
+  id-token: write # required by GitHub to publish pages
+
+concurrency:
+  group: scan
+  cancel-in-progress: false
+
+jobs:
+  scan:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    environment:
+      name: github-pages
+    steps:
+      - uses: actions/checkout@v4
+
+      # The template project itself shows the setup guide instead of a job board.
+      - name: Setup guide (template project only)
+        if: github.repository == 'BarboneBarbaPersonal/JobScout-Template'
+        run: mkdir -p site && cp page/setup.html site/index.html
+
+      - uses: actions/setup-python@v5
+        if: github.repository != 'BarboneBarbaPersonal/JobScout-Template'
+        with:
+          python-version: "3.12"
+          cache: pip
+
+      - if: github.repository != 'BarboneBarbaPersonal/JobScout-Template'
+        run: pip install -r requirements.txt
+
+      # Remembered between scans, never published: which board each company uses.
+      - uses: actions/cache@v4
+        if: github.repository != 'BarboneBarbaPersonal/JobScout-Template'
+        with:
+          path: cache
+          key: scan-${{ github.run_id }}
+          restore-keys: scan-
+
+      # The board published by the last scan (keeps each job's "found" date).
+      - name: Get the current page data
+        if: github.repository != 'BarboneBarbaPersonal/JobScout-Template'
+        run: |
+          mkdir -p site
+          page="https://${GITHUB_REPOSITORY_OWNER,,}.github.io/${GITHUB_REPOSITORY#*/}"
+          curl -sfL "$page/matches.json" -o site/matches.json || rm -f site/matches.json
+          curl -sfL "$page/runs.json" -o site/runs.json || rm -f site/runs.json
+
+      - name: Scan
+        if: github.repository != 'BarboneBarbaPersonal/JobScout-Template'
+        env:
+          SHEET_URL: ${{ secrets.SHEET_URL }}
+        run: python -m scout.main site
+
+      # Publish the page, also when the scan stopped early (the page then says why).
+      - uses: actions/configure-pages@v5
+        if: ${{ !cancelled() }}
+        with:
+          enablement: true # switch GitHub Pages on the first time
+      - uses: actions/upload-pages-artifact@v3
+        if: ${{ !cancelled() }}
+        with:
+          path: site
+      - uses: actions/deploy-pages@v4
+        if: ${{ !cancelled() }}
