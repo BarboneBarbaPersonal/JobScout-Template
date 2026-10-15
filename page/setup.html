@@ -132,7 +132,7 @@
     <div class="result" id="sheet-result"></div>
     <div class="hint">Is this safe? Your sheet doesn't become public or searchable. Only people who have
       this exact link can <b>view</b> it, and nobody can edit it. The test above runs in your browser and only talks to Google.
-      In step 6 you save the link as a hidden setting, so it never appears on your page.</div>
+      In step 7 you save the link as a hidden setting, so it never appears on your page.</div>
   </div>
 
   <h2>Part 2 - Your JobScout on GitHub</h2>
@@ -153,8 +153,18 @@
     </div>
   </div>
 
+  <div class="step" data-step="pages">
+    <div class="step-head"><input type="checkbox" aria-label="Done"><h3>6. Turn on your page</h3><span class="time">1 min</span></div>
+    <ol>
+      <li>Click <b>Turn on my page</b>.</li>
+      <li>Under <b>Branch</b>, choose <b>gh-pages</b>, leave <b>/ (root)</b>, and click <b>Save</b>.
+        If gh-pages isn't in the list, wait one minute and reload: your new project is still setting itself up.</li>
+    </ol>
+    <a class="btn needs-repo" data-path="/settings/pages" target="_blank" rel="noopener">Turn on my page</a>
+  </div>
+
   <div class="step" data-step="secret">
-    <div class="step-head"><input type="checkbox" aria-label="Done"><h3>6. Save your sheet link as a secret</h3><span class="time">1 min</span></div>
+    <div class="step-head"><input type="checkbox" aria-label="Done"><h3>7. Save your sheet link as a secret</h3><span class="time">1 min</span></div>
     <p>A <b>secret</b> is a hidden setting. Once you save it, nobody can see it again, not even you.</p>
     <ol>
       <li>Click the button below. It opens your project's <i>Settings, Secrets and variables, Actions</i> page.</li>
@@ -166,7 +176,7 @@
   </div>
 
   <div class="step" data-step="scan">
-    <div class="step-head"><input type="checkbox" aria-label="Done"><h3>7. Start your first scan</h3><span class="time">5 min</span></div>
+    <div class="step-head"><input type="checkbox" aria-label="Done"><h3>8. Start your first scan</h3><span class="time">5 min</span></div>
     <p>JobScout scans by itself every hour. To see your board now instead of waiting:</p>
     <ol>
       <li>Click <b>Start my first scan</b>, then <b>Run workflow</b> on the right, then the green <b>Run workflow</b> button.</li>
@@ -184,9 +194,9 @@
   <details><summary>Something isn't working</summary>
     <table>
       <tr><th>What you see</th><th>What to do</th></tr>
-      <tr><td>Your page says "Almost there: add your sheet link"</td><td>The secret is missing or misspelled. Redo step 6 and type <code>SHEET_URL</code> exactly.</td></tr>
+      <tr><td>Your page says "Almost there: add your sheet link"</td><td>The secret is missing or misspelled. Redo step 7 and type <code>SHEET_URL</code> exactly.</td></tr>
       <tr><td>Your page says "JobScout can't read your sheet"</td><td>The sheet isn't shared. Redo step 4.</td></tr>
-      <tr><td>Your page shows "404"</td><td>The first scan hasn't finished yet. Wait 5 minutes and reload.</td></tr>
+      <tr><td>Your page shows "404"</td><td>Step 6 was skipped, or the page is still starting. Do step 6, wait 2 minutes and reload.</td></tr>
       <tr><td>A company never shows jobs</td><td>Open the latest scan run: the summary lists companies JobScout couldn't find.
         Add their careers page link in your sheet.</td></tr>
     </table></details>
@@ -199,7 +209,7 @@
       <tr><td>Your job page</td><td>Anyone who has its address. It only shows matching jobs, and it asks search engines not to list it.</td></tr>
     </table></details>
   <details><summary>Does it cost anything? How do I pause it?</summary>
-    <p>It's free: it uses the free plans of GitHub and Google. To pause it, open the Scan page (step 7), click the
+    <p>It's free: it uses the free plans of GitHub and Google. To pause it, open the Scan page (step 8), click the
       <b>...</b> menu at the top right and choose <b>Disable workflow</b>.</p></details>
 </div>
 

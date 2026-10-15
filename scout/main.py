@@ -27,7 +27,7 @@ def main():
     source = os.environ.get("SHEET_URL", "").strip()
     if not source:
         stop(site, "Almost there: add your sheet link",
-             "JobScout doesn't know your Google Sheet yet. Open the setup guide and do step 6 "
+             "JobScout doesn't know your Google Sheet yet. Open the setup guide and do step 7 "
              "(save your sheet link as SHEET_URL). Your board appears here after the next scan.")
     try:
         prefs = Preferences(sheet.read_preferences(source))
