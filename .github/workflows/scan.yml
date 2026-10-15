@@ -9,9 +9,7 @@ on:
     branches: [main] # also right after the project is created from the template
 
 permissions:
-  contents: read
-  pages: write    # publish the page
-  id-token: write # required by GitHub to publish pages
+  contents: write # to publish the page on the gh-pages branch
 
 concurrency:
   group: scan
@@ -21,8 +19,6 @@ jobs:
   scan:
     runs-on: ubuntu-latest
     timeout-minutes: 30
-    environment:
-      name: github-pages
     steps:
       - uses: actions/checkout@v4
 
@@ -49,13 +45,10 @@ jobs:
           restore-keys: scan-
 
       # The board published by the last scan (keeps each job's "found" date).
-      - name: Get the current page data
+      - name: Get the current page
         if: github.repository != 'BarboneBarbaPersonal/JobScout-Template'
         run: |
-          mkdir -p site
-          page="https://${GITHUB_REPOSITORY_OWNER,,}.github.io/${GITHUB_REPOSITORY#*/}"
-          curl -sfL "$page/matches.json" -o site/matches.json || rm -f site/matches.json
-          curl -sfL "$page/runs.json" -o site/runs.json || rm -f site/runs.json
+          git fetch --depth 1 origin gh-pages && git worktree add site origin/gh-pages || mkdir -p site
 
       - name: Scan
         if: github.repository != 'BarboneBarbaPersonal/JobScout-Template'
@@ -64,13 +57,15 @@ jobs:
         run: python -m scout.main site
 
       # Publish the page, also when the scan stopped early (the page then says why).
-      - uses: actions/configure-pages@v5
+      # The first push of the gh-pages branch also switches GitHub Pages on.
+      - name: Publish the page
         if: ${{ !cancelled() }}
-        with:
-          enablement: true # switch GitHub Pages on the first time
-      - uses: actions/upload-pages-artifact@v3
-        if: ${{ !cancelled() }}
-        with:
-          path: site
-      - uses: actions/deploy-pages@v4
-        if: ${{ !cancelled() }}
+        run: |
+          cd site
+          rm -rf .git
+          git init -q -b gh-pages
+          git config user.name "JobScout"
+          git config user.email "jobscout@users.noreply.github.com"
+          git add -A
+          git commit -q -m "Scan $(date -u +%Y-%m-%dT%H:%MZ)"
+          git push -q --force "https://x-access-token:${{ github.token }}@github.com/${{ github.repository }}" gh-pages
