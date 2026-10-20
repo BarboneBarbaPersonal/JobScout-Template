@@ -35,7 +35,8 @@ def main():
     except Exception as error:
         stop(site, "JobScout can't read your sheet", f"{error} Check step 4 of the setup guide: "
              "Share > Anyone with the link > Viewer. The next scan will try again.")
-    print(f"{len(companies)} companies, roles: {', '.join(prefs.core + prefs.also)}")
+    # Run logs are public (public repo): counts only, never the preferences themselves.
+    print(f"{len(companies)} companies, {len(prefs.core + prefs.also)} role keywords")
 
     boards, not_found = find_boards(companies)
     hints = {"countries": countries(prefs)}

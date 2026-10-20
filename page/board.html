@@ -114,6 +114,8 @@
     var days = Math.floor((Date.now() - new Date(iso)) / 86400000);
     return days <= 0 ? "today" : days + "d ago";
   }
+  // Job links come from outside websites: allow only http(s) links.
+  function safeUrl(url) { return /^https?:\/\//i.test(url || "") ? url : ""; }
   function num(value) { return value === null || value === undefined ? "-" : value.toLocaleString("en-US"); }
 
   // ---- "Hide" remembers dismissed jobs in this browser only (per device) ----
@@ -182,7 +184,7 @@
     node.appendChild(top);
 
     var link = el("a", "title", job.title);
-    link.href = job.url; link.target = "_blank"; link.rel = "noopener";
+    if (safeUrl(job.url)) { link.href = safeUrl(job.url); link.target = "_blank"; link.rel = "noopener noreferrer"; }
     node.appendChild(link);
 
     var meta = el("div", "meta");

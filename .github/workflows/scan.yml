@@ -27,7 +27,7 @@ jobs:
         if: github.repository == 'BarboneBarbaPersonal/JobScout-Template'
         run: mkdir -p site && cp page/setup.html site/index.html
 
-      - uses: actions/setup-python@v5
+      - uses: actions/setup-python@a26af69be951a213d495a4c3e4e4022e16d87065 # v5
         if: github.repository != 'BarboneBarbaPersonal/JobScout-Template'
         with:
           python-version: "3.12"
@@ -37,7 +37,7 @@ jobs:
         run: pip install -r requirements.txt
 
       # Remembered between scans, never published: which board each company uses.
-      - uses: actions/cache@v4
+      - uses: actions/cache@0057852bfaa89a56745cba8c7296529d2fc39830 # v4
         if: github.repository != 'BarboneBarbaPersonal/JobScout-Template'
         with:
           path: cache
